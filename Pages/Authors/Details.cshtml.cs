@@ -23,7 +23,10 @@ public class DetailsModel : PageModel
             return NotFound();
         }
 
-        var author = await _context.Author.FirstOrDefaultAsync(m => m.ID == id);
+        var author = await _context.Author
+            .Include(a => a.Books)
+            .FirstOrDefaultAsync(m => m.ID == id);
+
         if (author is null)
         {
             return NotFound();
