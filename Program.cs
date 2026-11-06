@@ -1,9 +1,18 @@
 using Pasca_Claudio_Lab2.Data;
+
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
 var builder = WebApplication.CreateBuilder(args);
+
 var connectionString = builder.Configuration.GetConnectionString("Pasca_Claudio_Lab2Context") ?? throw new InvalidOperationException("Connection string 'Pasca_Claudio_Lab2Context' not found.");
 
 builder.Services.AddDbContext<Pasca_Claudio_Lab2Context>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDbContext<LibraryIdentityContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<LibraryIdentityContext>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -19,9 +28,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
